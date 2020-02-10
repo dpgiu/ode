@@ -1,0 +1,9 @@
+caotic_pendulum.o: precision.o
+caotic_pendulum.o: functions.o
+caotic_pendulum.o: solvers.o
+functions.o: precision.o
+solvers.o: precision.o
+solvers.o: precision.o
+test.o: precision.o
+test.o: functions.o
+test.o: solvers.o

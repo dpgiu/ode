@@ -1,0 +1,26 @@
+#!/bin/bash
+
+
+echo ./test 0.01 100 rk2
+./test 0.01 100 rk2
+echo ./test 0.01 100 rk4
+./test 0.01 100 rk4
+echo ./test 0.01 100 dp54
+./test 0.01 100 dp54
+echo ./test 0.01 100 dp87
+./test 0.01 100 dp87
+
+
+echo ./test 0.001 1000 rk2
+./test 0.001 1000 rk2
+echo ./test 0.001 1000 rk4
+./test 0.001 1000 rk4
+echo ./test 0.001 1000 dp54
+./test 0.001 1000 dp54
+echo ./test 0.001 1000 dp87
+./test 0.001 1000 dp87
+
+echo ./test 0.001 100000 dp54
+./test 0.001 100000 dp54
+echo ./test 0.001 100000 dp87
+./test 0.001 100000 dp87
