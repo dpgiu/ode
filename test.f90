@@ -47,7 +47,7 @@ program test
 
   k1 = -1.0_dp
   k2 = 0.0_dp
-  x0 = 10.0_dp
+  x0 = 9.0_dp
   v0 = 0.0_dp
   u0 = (/x0, v0/)
   t = 0.0_dp
