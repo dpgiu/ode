@@ -6,12 +6,23 @@ module functions
   public :: ff
   public :: pendolo
   public :: harmonic
+  public :: func
   
   real(dp), public :: k1 
   real(dp), public :: k2
   real(dp), public :: Q
   real(dp), public :: A
-  real(dp), public :: w  
+  real(dp), public :: w
+
+  interface 
+    function func(t,u) result(up)   
+      use precision    
+      real(dp), intent(in) :: t    
+      real(dp), intent(in) :: u(:)    
+      real(dp), allocatable :: up(:)    
+    end function
+  end interface
+  
 
   contains
 

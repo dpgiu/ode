@@ -17,6 +17,9 @@ contains
     real(dp), allocatable :: u(:), u0(:), uex(:)
     integer :: Ntot, Ntrans, id, id2
     integer :: i
+
+    ! w0 = 1
+    ! dt = 0.01
     
     dt = 2.0_dp*pi/(w*real(Nstep, dp))
 

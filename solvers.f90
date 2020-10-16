@@ -1,22 +1,37 @@
 module solvers
   use precision
+  use functions
   implicit none
   private
 
   public :: rk2 
   public :: rk4
+  
   public :: dopri54
   public :: dopri87
 
-  interface 
-    function func(t,u) result(up)   
-      use precision    
-      real(dp), intent(in) :: t    
-      real(dp), intent(in) :: u(:)    
-      real(dp), allocatable :: up(:)    
-    end function
-  end interface
+  public :: solver
 
+  interface 
+    subroutine  solver(ff, t, dt, u0, u, err)
+       use precision
+       interface 
+         function ff(t,u) result(up)   
+           use precision    
+           real(dp), intent(in) :: t    
+           real(dp), intent(in) :: u(:)    
+           real(dp), allocatable :: up(:)    
+         end function
+       end interface
+       real(dp), intent(in) :: t
+       real(dp), intent(in) :: dt
+       real(dp), intent(in) :: u0(:)
+       real(dp), intent(inout) :: u(:)
+       real(dp), intent(inout) :: err
+    end subroutine solver
+  end interface 
+
+  
   contains
 
   subroutine rk2(f, t, dt, u0, u)

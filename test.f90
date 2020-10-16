@@ -4,33 +4,16 @@ program test
   use solvers 
   implicit none
 
-  interface 
-    subroutine  solver(ff, t, dt, u0, u, err)
-       use precision
-       interface 
-         function ff(t,u) result(up)   
-           use precision    
-           real(dp), intent(in) :: t    
-           real(dp), intent(in) :: u(:)    
-           real(dp), allocatable :: up(:)    
-         end function
-       end interface
-       real(dp), intent(in) :: t
-       real(dp), intent(in) :: dt
-       real(dp), intent(in) :: u0(:)
-       real(dp), intent(inout) :: u(:)
-       real(dp), intent(inout) :: err
-    end subroutine solver
-  end interface 
-
   real(dp) :: err, t, dt, x0, v0, AA, BB, xex
   real(dp), allocatable :: u(:), u0(:) 
-  integer :: i, Nstep
+  integer :: i, Nstep, funit
   procedure(solver), pointer :: psolver 
   character(50) :: arg
+  character(10) :: solname
+  logical :: booleano ! = .true. || .false.
 
-  if (command_argument_count() < 3) then
-     write(*,*) "test dt Nstep method"
+  if (command_argument_count() < 8) then
+     write(*,*) "test dt Nstep method Q A w x0 v0"
      stop
   endif
 
@@ -40,35 +23,56 @@ program test
   call get_command_argument(2,arg)
   read(arg,*) Nstep
 
-  call get_command_argument(3,arg)
+  call get_command_argument(3,solname)
+
+  call get_command_argument(4,arg)
+  read(arg,*) Q
+
+  call get_command_argument(5,arg)
+  read(arg,*) A
+
+  call get_command_argument(6,arg)
+  read(arg,*) w
+
+  call get_command_argument(7,arg)
+  read(arg,*) x0
+
+  call get_command_argument(8,arg)
+  read(arg,*) v0
+  
 
   allocate(u(2))
   allocate(u0(2))
 
-  k1 = -1.0_dp
-  k2 = 0.0_dp
-  x0 = 9.0_dp
-  v0 = 0.0_dp
+  ! u0(1) = u0
+  ! u0(2) = v0
+  
   u0 = (/x0, v0/)
   t = 0.0_dp
   err = 0.0_dp
 
-  AA = x0
-  !AA = (v0 - k2*x0) / (k1-k2)  
-  !BB = (x0*k1 - v0) / (k1-k2)   
-  select case(trim(arg))
+  ! arg ='rk2  <-- trailing white spaces -->'
+  !if (trim(arg) == 'rk2') then
+  !   ...
+  !else if (trim(arg) = 'rk4') then
+  !  ...
+  !end if
+
+  open(newunit=funit, file="solution.dat")
+     
+  select case(trim(solname))
   case('rk2')
-    do i = 1, Nstep
-      call rk2(ff, t, dt, u0, u)
+     do i = 1, Nstep
+      write(funit,*) t, u0(1), u0(2)   
+      call rk2(harmonic, t, dt, u0, u)
       t = t+dt
-      xex = AA*cos(-k1*t)
       u0 = u
     end do  
   case('rk4')
     do i = 1, Nstep
-      call rk4(ff, t, dt, u0, u)
+      write(funit,*) t, u0(1), u0(2)  
+      call rk4(harmonic, t, dt, u0, u)
       t = t+dt
-      xex = AA*cos(-k1*t)
       u0 = u
     end do  
   case('dp54')    
@@ -86,10 +90,14 @@ program test
       u0 = u
     end do
   case default
-     write(*,*) 'error: solver ',trim(arg),' not found'   
+     write(*,*) 'error: solver ',trim(arg),' not found'
+     stop
   end select
-  write(*,*) '   time         computed            exact            error           step-error'
-  write(*,'(f10.4,4(es18.8))') t, u0(1), xex, abs(u0(1)-xex), err
+
+  close(funit)
+  
+  !write(*,*) '   time         computed            exact            error           step-error'
+  !write(*,'(f10.4,4(es18.8))') t, u0(1), xex, abs(u0(1)-xex), err
     
 end program test
 
