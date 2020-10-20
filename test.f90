@@ -4,24 +4,25 @@ program test
   use solvers 
   implicit none
 
+  real(dp), parameter :: pi = acos(-1.0_dp)
   real(dp) :: err, t, dt, x0, v0, AA, BB, xex
   real(dp), allocatable :: u(:), u0(:) 
-  integer :: i, Nstep, funit
+  integer :: i, Ncicli, Nstep, funit
   procedure(solver), pointer :: psolver 
   character(50) :: arg
   character(10) :: solname
   logical :: booleano ! = .true. || .false.
 
   if (command_argument_count() < 8) then
-     write(*,*) "test dt Nstep method Q A w x0 v0"
+     write(*,*) "test Nstep Ncicli method Q A w x0 v0"
      stop
   endif
 
   call get_command_argument(1,arg)
-  read(arg,*) dt 
+  read(arg,*) Nstep 
 
   call get_command_argument(2,arg)
-  read(arg,*) Nstep
+  read(arg,*) Ncicli
 
   call get_command_argument(3,solname)
 
@@ -44,8 +45,18 @@ program test
   allocate(u(2))
   allocate(u0(2))
 
+  !pi = acos(-1.0_dp)
   ! u0(1) = u0
   ! u0(2) = v0
+
+  ! T = dt*Nstep
+  ! dt = 1/(w0*Nstep) 
+
+  ! dt | Nstep intero per coprire l'orbita periodica di periodo 2*pi/w
+  ! w = 2/3 (0.666666666666666)
+  dt = 2.0_dp*pi/(w*Nstep)
+
+  ! NtotStep = Nstep*Ncicli
   
   u0 = (/x0, v0/)
   t = 0.0_dp
@@ -62,28 +73,28 @@ program test
      
   select case(trim(solname))
   case('rk2')
-     do i = 1, Nstep
+     do i = 1, Nstep*Ncicli
       write(funit,*) t, u0(1), u0(2)   
       call rk2(harmonic, t, dt, u0, u)
       t = t+dt
       u0 = u
     end do  
   case('rk4')
-    do i = 1, Nstep
+    do i = 1, Nstep*Ncicli
       write(funit,*) t, u0(1), u0(2)  
       call rk4(harmonic, t, dt, u0, u)
       t = t+dt
       u0 = u
     end do  
   case('dp54')    
-    do i = 1, Nstep
+    do i = 1, Nstep*Ncicli
       call dopri54(ff, t, dt, u0, u, err)
       t = t+dt
       xex = AA*cos(-k1*t)
       u0 = u
     end do  
   case('dp87')
-    do i = 1, Nstep
+    do i = 1, Nstep*Ncicli
       call dopri87(ff, t, dt, u0, u, err)
       t = t+dt
       xex = AA*cos(-k1*t)
