@@ -1,0 +1,1 @@
+plot 'solution.dat' u 2:3

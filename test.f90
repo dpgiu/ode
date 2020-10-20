@@ -7,7 +7,7 @@ program test
   real(dp), parameter :: pi = acos(-1.0_dp)
   real(dp) :: err, t, dt, x0, v0, AA, BB, xex
   real(dp), allocatable :: u(:), u0(:) 
-  integer :: i, Ncicli, Nstep, funit
+  integer :: i, j, Ncicli, Nstep, funit
   procedure(solver), pointer :: psolver 
   character(50) :: arg
   character(10) :: solname
@@ -75,16 +75,20 @@ program test
   case('rk2')
      do i = 1, Nstep*Ncicli
       write(funit,*) t, u0(1), u0(2)   
-      call rk2(harmonic, t, dt, u0, u)
+      call rk2(pendolo, t, dt, u0, u)
       t = t+dt
       u0 = u
     end do  
-  case('rk4')
-    do i = 1, Nstep*Ncicli
-      write(funit,*) t, u0(1), u0(2)  
-      call rk4(harmonic, t, dt, u0, u)
-      t = t+dt
-      u0 = u
+ case('rk4')
+    do j = 1, Ncicli
+      if (j > 2*Ncicli/3) then
+         write(funit,*) t, u0(1), u0(2)
+      end if   
+      do i = 1, Nstep
+         call rk4(pendolo, t, dt, u0, u)
+         t = t+dt
+         u0 = u
+      end do 
     end do  
   case('dp54')    
     do i = 1, Nstep*Ncicli
