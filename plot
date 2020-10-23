@@ -1,1 +1,1 @@
-plot 'solution.dat' u 2:3
+plot 'solution.dat' u 1:2 w dot
