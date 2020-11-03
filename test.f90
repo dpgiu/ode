@@ -1,10 +1,10 @@
 program test
     use precision
+    use constants
     use functions
     use solvers
     implicit none
 
-    real(dp), parameter        :: pi = acos(-1.0_dp)
     real(dp)                   :: err, t, dt, x0, v0, Qmin, Qmax, dQ, AA, BB, xex, c
     real(dp), allocatable      :: u(:), u0(:), u00(:), param(:)
     integer                    :: i, j, k, NQ, Nstep, Ncicli, num_args, funit            ! funit = file unit

@@ -1,6 +1,8 @@
 caotic_pendulum.o: precision.o
+caotic_pendulum.o: constants.o
 caotic_pendulum.o: functions.o
 caotic_pendulum.o: solvers.o
+constants.o: precision.o
 functions.o: precision.o
 functions.o: precision.o
 solvers.o: precision.o
