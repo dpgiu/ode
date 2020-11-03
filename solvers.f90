@@ -76,13 +76,13 @@ module solvers
     real(dp), intent(inout) :: err
  
     real(dp), dimension(:,:), allocatable :: k 
- 
+    
     allocate(k(size(u0) ,7))
     
     k(:,1) = f(t, u0)*h
-    k(:,2) = f(t+h/5.0d0, u0+k(:,1)/5.0d0)*h
-    k(:,3) = f(t+3.d0*h/10.0d0, u0+3.d0/40.0d0*k(:,1)+9.d0/40.0d0*k(:,2))*h
-    k(:,4) = f(t+h*4.d0/5.d0, u0+44.d0/45.d0*k(:,1)+160.d0/45.d0*k(:,3)-168.d0/45.d0*k(:,2))*h
+    k(:,2) = f(t+h/5.0_dp, u0+k(:,1)/5.0_dp)*h
+    k(:,3) = f(t+3.0_dp*h/10.0_dp, u0+3.0_dp/40.0_dp*k(:,1)+9.0_dp/40.0_dp*k(:,2))*h
+    k(:,4) = f(t+h*4.0_dp/5.0_dp, u0+44.0_dp/45.0_dp*k(:,1)+160.0_dp/45.0_dp*k(:,3)-168.0_dp/45.0_dp*k(:,2))*h
     k(:,5) = f(t+h*8.d0/9.d0, u0+38744.d0/13122.d0*k(:,1)+128896.d0/13122.d0*k(:,3)-152160.d0/13122.d0*k(:,2) &
             -3816.d0/13122.d0*k(:,4))*h
     k(:,6) = f(t+h, u0+9017.d0/3168.d0*k(:,1)+46732.d0/5247.d0*k(:,3)+5194.d0/18656.d0*k(:,4) &
@@ -94,6 +94,8 @@ module solvers
     k(:,7) = f(t+h, u)*h
 
     ! just estimate the error as  ( z - y ):
+    ! err = max(|u(5)-u(4)|)
+    ! maxval(u(:)) maxloc(u(:)) indice del valore massimo 
     err = maxval(abs( 71.d0/57600.d0*k(:,1)+22.d0/525.d0*k(:,6) &
         & +71.d0/1920.d0*k(:,4) &
         & -71.d0/16695.d0*k(:,3)-17253.d0/339200.d0*k(:,5)-1.d0/40.d0*k(:,7) ))

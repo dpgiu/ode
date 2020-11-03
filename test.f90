@@ -5,8 +5,8 @@ program test
     implicit none
 
     real(dp), parameter        :: pi = acos(-1.0_dp)
-    real(dp)                   :: err, t, dt, x0, v0, Qmin, Qmax, dQ, AA, BB, xex
-    real(dp), allocatable      :: u(:), u0(:), param(:)
+    real(dp)                   :: err, t, dt, x0, v0, Qmin, Qmax, dQ, AA, BB, xex, c
+    real(dp), allocatable      :: u(:), u0(:), u00(:), param(:)
     integer                    :: i, j, k, NQ, Nstep, Ncicli, num_args, funit            ! funit = file unit
     procedure(solver), pointer :: psolver
     character(50), allocatable :: args(:)   ! stringa
@@ -41,11 +41,13 @@ program test
     A      = param(7)
     w      = param(8)                            ! per mostrare i diagrammi di biforcazione in genere si sceglie il valore 2/3
     u0     = (/param(9), param(10)/)
+    u00    = u0
     NQ     = int((Qmax - Qmin) / dQ)      
     t      = 0.0_dp
     dt     = real((2.0_dp * pi)/(w * Nstep), dp) 
     err    = 0.0_dp
-
+    Q      = Qmin
+    
     !arg = 'rk2  ' <- trailing white spaces -->'
     ! if (arg == 'rk2') then
     !  ...
@@ -87,14 +89,18 @@ program test
             u0 = u
         end do
     case('dp54')
-        do i = 1, Nstep * Ncicli
-            call dopri54(pendolo, t, dt, u0, u, err)
+       do i = 1, Nstep * Ncicli
+            c = u00(1)*cos(t)+u00(2)*sin(t)
+            write(*,*) t, u0(1), c, abs(u0(1)-c), err
+            call dopri54(harmonic, t, dt, u0, u, err)
             t = t+dt
             u0 = u
         end do
     case('dp87')
-        do i = 1, Nstep * Ncicli
-            call dopri87(pendolo, t, dt, u0, u, err)
+       do i = 1, Nstep * Ncicli
+            c = u00(1)*cos(t)+u00(2)*sin(t)
+            write(*,*) t, u0(1), c, abs(u0(1)-c), err
+            call dopri87(harmonic, t, dt, u0, u, err)
             t = t+dt
             u0 = u
         end do
