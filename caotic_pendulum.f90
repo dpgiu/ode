@@ -1,11 +1,9 @@
 module caotic_pendulum
   use precision
+  use constants
   use functions
   use solvers
   implicit none
-
-  real(dp), parameter :: pi = 3.14159265358979323846264338327_dp 
-  real(dp), parameter :: eps = 1.d-10
 
 contains
 

@@ -1,2 +1,5 @@
 *.o
 *.mod
+*.f90~
+#Makefile#
+test
