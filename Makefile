@@ -1,4 +1,3 @@
-
 FC = gfortran
 FLAGS = -O3  # -fbounds-check
 TARGET = test 
